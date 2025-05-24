@@ -14,5 +14,4 @@ Steps to download and install dependencies for local development
 
 ## References
 
-- https://www.southampton.ac.uk/~fangohr/teaching/python/book/html/16-scipy.html
-- https://profoundphysics.com/calculus-of-variations-for-beginners/
+- https://www.rolfolsenastrophotography.com/Astrophotography/Colour-Magnitude-Diagrams

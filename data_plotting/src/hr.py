@@ -17,8 +17,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 log = logging.getLogger(__name__)
 
 LINE_LENGTH = 130
-# ROW_LIMIT = 300000
-ROW_LIMIT = 1000
+ROW_LIMIT = 300000
+#ROW_LIMIT = 1000
 RUN_ALL = False
 PLOT_SINGLE = True  # Set to True to plot a single cluster, False to plot all clusters
 
