@@ -21,7 +21,8 @@ columns = [
     'phot_g_mean_mag',
     'phot_bp_mean_mag',
     'phot_rp_mean_mag',
-    'ruwe' # Renormalised Unit Weight Error - crucial quality indicator
+    'ruwe', # Renormalised Unit Weight Error - crucial quality indicator
+    'radial_velocity'
 ]
 
 def log_for_object(object_name: str, message: str):
