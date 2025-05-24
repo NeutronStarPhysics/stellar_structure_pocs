@@ -1,6 +1,6 @@
 Cluster Name,Common Designation,Right Ascension (RA) J2000,Declination (Dec) J2000,Notes,Process
 Pleiades,M45,03h47m24s,+24d07m00s,A young nearby open cluster known for its prominent blue reflection nebulae,0
-Omega Centauri,NGC 5139,13h26m47.2s,-47d28m46s,Largest and brightest globular cluster in the Milky Way,0
+Omega Centauri,NGC 5139,13h26m47.2s,-47d28m46s,Largest and brightest globular cluster in the Milky Way,1
 47 Tucanae,NGC 104,00h24m05.5s,-72d04m53.2s,Second brightest globular cluster prominent in the Southern Hemisphere,0
 Hercules Cluster,"M13, NGC 6205",16h41m41.2s,+36d27m37s,One of the brightest in the Northern Hemisphere,0
 Great Pegasus Cluster,"M15, NGC 7078",21h29m58.3s,+12d10m01s,Known for having a planetary nebula (Pease 1),0
@@ -11,5 +11,5 @@ M92,NGC 6341,17h17m07.4s,+43d08m09s,Another bright northern cluster often compar
 M4,NGC 6121,16h23m35.4s,-26d31m32s,The closest globular cluster to Earth excellent for studying white dwarfs,0
 NGC 362,-,01h03m14.3s,-70d50m56s,Another bright southern cluster companion to 47 Tuc,0
 NGC 2808,-,09h12m03.1s,-64d51m49s,Contains multiple stellar populations,0
-Mayall II,NGC-224-G1,00h32m46.51s,+39d34m39.7s,A globular cluster in the Andromeda Galaxy (M31),1
+Mayall II,NGC-224-G1,00h32m46.51s,+39d34m39.7s,A globular cluster in the Andromeda Galaxy (M31),0
 

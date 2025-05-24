@@ -31,7 +31,7 @@ def log_for_object(object_name: str, message: str):
     log.info(f"[{object_name}] {message}")
 
 
-def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity, row_limit: int):
+def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity, row_limit: int, apply_filters: bool = True) -> pd.DataFrame:
 
     Gaia.ROW_LIMIT = row_limit
 
@@ -56,12 +56,14 @@ def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity
 
     gaia_df = table.to_pandas()
 
-    # Apply remaining filters if not fully applied in query (or for explicit post-processing) ---
-    # It's good practice to ensure all quality filters are applied explicitly.
     initial_rows = len(gaia_df)
-    gaia_df.dropna(subset=['phot_g_mean_mag', 'phot_bp_mean_mag', 'phot_rp_mean_mag', 'parallax', 'parallax_error', 'ruwe'], inplace=True)
-    gaia_df = gaia_df[gaia_df['parallax_error'] < 5]
-    gaia_df = gaia_df[gaia_df['ruwe'] < 1.4]
+    if apply_filters:
+        # Apply remaining filters if not fully applied in query (or for explicit post-processing) ---
+        # It's good practice to ensure all quality filters are applied explicitly.
+        gaia_df.dropna(subset=['phot_g_mean_mag', 'phot_bp_mean_mag', 'phot_rp_mean_mag', 'parallax', 'parallax_error', 'ruwe'], inplace=True)
+        gaia_df = gaia_df[gaia_df['parallax_error'] < 5]
+        gaia_df = gaia_df[gaia_df['ruwe'] < 1.4]
+
     log_for_object(object_name, f"After filtering, {len(gaia_df)} stars remain for plotting (removed {initial_rows - len(gaia_df)}).")
 
     # Calculate Absolute Magnitude and Color Index ---
@@ -73,9 +75,39 @@ def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity
     gaia_df['abs_g_mag'] = gaia_df['phot_g_mean_mag'] + 5 * np.log10(gaia_df['parallax']) - 10
 
     log_for_object(object_name, "Sample of processed data:")
-    log_for_object(object_name, gaia_df[['phot_g_mean_mag', 'bp_rp_color', 'abs_g_mag', 'parallax', 'ruwe']].head())
-    plot_hr_diagram (gaia_df, object_name, search_radius)
-    plot_density_diagram (gaia_df, object_name, search_radius)
+    # log_for_object(object_name, gaia_df[['phot_g_mean_mag', 'bp_rp_color', 'abs_g_mag', 'parallax', 'ruwe']].head())
+    log_for_object(object_name, gaia_df.head())
+
+    return gaia_df
+
+def plot_frames(dataframes, figsize=(15, 5)):
+
+    n = len(dataframes)
+    fig, axes = plt.subplots(1, n, figsize=figsize, sharey=True)
+    if n == 1:
+        axes = [axes]
+    for i, (df, ax) in enumerate(zip(dataframes, axes)):
+
+        # Scatter plot
+        plt.scatter(
+            df['bp_rp_color'],
+            df['abs_g_mag'],
+            s=3,          # Small marker size
+            alpha=0.5,    # Transparency for dense regions
+            color='blue'  # Or use a colormap for density
+        )
+
+        # Invert y-axis for HR Diagram convention (brighter at top)
+        plt.gca().invert_yaxis()
+
+
+        ax.minorticks_on()
+        ax.invert_yaxis()
+    
+    plt.tight_layout()
+    plt.savefig(f"../plots/all_hr_diagrams.png", dpi=300)
+
+
 
 def plot_density_diagram(gaia_df: pd.DataFrame, object_name: str, search_radius:  u.Quantity):
     # --- Plotting density instead of individual points for very dense clusters ---
