@@ -24,38 +24,33 @@ columns = [
     'ruwe' # Renormalised Unit Weight Error - crucial quality indicator
 ]
 
-# Basic ADQL (Astronomical Data Query Language) filters for quality
-#   - parallax_over_error > 5: Good parallax measurement
-#   - ruwe < 1.4: Good astrometric solution (recommended by Gaia for single stars)
-#   - phot_g_mean_mag < 20: Limit to reasonably bright stars for initial download size
-query_filters = """
-    parallax_over_error > 5 AND
-    ruwe < 1.4 AND
-    phot_g_mean_mag IS NOT NULL AND
-    phot_bp_mean_mag IS NOT NULL AND
-    phot_rp_mean_mag IS NOT NULL
-"""
+def log_for_object(object_name: str, message: str):
+    """
+    Log a message for a specific object.
+    """
+    log.info(f"[{object_name}] {message}")
+
+
 def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity, row_limit: int):
 
     Gaia.ROW_LIMIT = row_limit
 
     # Function to retrieve data
-    log.info(f"Searching around {object_name} (RA: {coords.ra.deg:.2f} deg, Dec: {coords.dec.deg:.2f} deg) with a radius of {search_radius}.")
-    log.info(f"Using Gaia DR3 with a row limit of {Gaia.ROW_LIMIT}.")
+    log_for_object(object_name, f"Searching around {object_name} (RA: {coords.ra.deg:.2f} deg, Dec: {coords.dec.deg:.2f} deg) with a radius of {search_radius}.")
+    log_for_object(object_name, f"Using Gaia DR3 with a row limit of {Gaia.ROW_LIMIT}.")
 
-    # cone_search_async returns an Astropy Job object
     # We specify the coordinates, radius, and the ADQL query parts.
-    log.info("Submitting Gaia cone search query...")
+    log_for_object(object_name, "Submitting Gaia cone search query...")
     job = Gaia.cone_search_async(
         coordinate=coords,
         radius=search_radius,
         columns=columns
     )
 
-    log.info("Query submitted. Waiting for results...")
+    log_for_object(object_name, "Query submitted. Waiting for results...")
     # Blocks until job is finished and fetches the results as an Astropy Table
     table = job.get_results()
-    log.info(f"Retrieved {len(table)} stars from Gaia DR3.")
+    log_for_object(object_name, f"Retrieved {len(table)} stars from Gaia DR3.")
     
     # Convert to Pandas DataFrame for easier manipulation (Optional but Recommended) ---
 
@@ -67,7 +62,7 @@ def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity
     gaia_df.dropna(subset=['phot_g_mean_mag', 'phot_bp_mean_mag', 'phot_rp_mean_mag', 'parallax', 'parallax_error', 'ruwe'], inplace=True)
     gaia_df = gaia_df[gaia_df['parallax_error'] < 5]
     gaia_df = gaia_df[gaia_df['ruwe'] < 1.4]
-    log.info(f"After filtering, {len(gaia_df)} stars remain for plotting (removed {initial_rows - len(gaia_df)}).")
+    log_for_object(object_name, f"After filtering, {len(gaia_df)} stars remain for plotting (removed {initial_rows - len(gaia_df)}).")
 
     # Calculate Absolute Magnitude and Color Index ---
     # For Gaia, the G_BP - G_RP color is commonly used
@@ -77,8 +72,8 @@ def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity
     # M_G = G_mag + 5 * log10(parallax_mas) - 10
     gaia_df['abs_g_mag'] = gaia_df['phot_g_mean_mag'] + 5 * np.log10(gaia_df['parallax']) - 10
 
-    log.info("Sample of processed data:")
-    log.info(gaia_df[['phot_g_mean_mag', 'bp_rp_color', 'abs_g_mag', 'parallax', 'ruwe']].head())
+    log_for_object(object_name, "Sample of processed data:")
+    log_for_object(object_name, gaia_df[['phot_g_mean_mag', 'bp_rp_color', 'abs_g_mag', 'parallax', 'ruwe']].head())
     plot_hr_diagram (gaia_df, object_name, search_radius)
     plot_density_diagram (gaia_df, object_name, search_radius)
 
@@ -102,8 +97,8 @@ def plot_density_diagram(gaia_df: pd.DataFrame, object_name: str, search_radius:
     plt.minorticks_on()
     plt.tight_layout()
     plt.show()
-    plt.savefig(f"../plots/hr_diagram_density_{object_name.replace(' ', '_').lower()}.png", dpi=300)
-    log.info(f"HR diagram density saved as hr_diagram_density_{object_name.replace(' ', '_').lower()}.png")
+    plt.savefig(f"../plots/{object_name.replace(' ', '_').lower()}_hr_diagram_density.png", dpi=300)
+    log_for_object(object_name, f"HR diagram density saved as hr_diagram_density_{object_name.replace(' ', '_').lower()}.png")
 
 def plot_hr_diagram(gaia_df: pd.DataFrame, object_name: str, search_radius:  u.Quantity):
 
@@ -128,5 +123,5 @@ def plot_hr_diagram(gaia_df: pd.DataFrame, object_name: str, search_radius:  u.Q
     plt.minorticks_on()
     plt.tight_layout()
     # plt.show()
-    plt.savefig(f"../plots/hr_diagram_{object_name.replace(' ', '_').lower()}.png", dpi=300)
-    log.info(f"HR diagram saved as hr_diagram_{object_name.replace(' ', '_').lower()}.png")
+    plt.savefig(f"../plots/{object_name.replace(' ', '_').lower()}_hr_diagram.png", dpi=300)
+    log_for_object(object_name, f"HR diagram saved as hr_diagram_{object_name.replace(' ', '_').lower()}.png")
