@@ -15,3 +15,4 @@ Steps to download and install dependencies for local development
 ## References
 
 - https://www.rolfolsenastrophotography.com/Astrophotography/Colour-Magnitude-Diagrams
+- https://astrophysicsspectator.org/topics/stars/HertzsprungRussellClusters.html
