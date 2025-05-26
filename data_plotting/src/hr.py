@@ -3,13 +3,17 @@
 
 # Inspirating code from: https://github.com/CheerfulUser/TESSreduce
 
-import logging
+# import logging
 import astropy.units as u
 from astropy.coordinates import SkyCoord
 from astroquery.gaia import Gaia
 import pandas as pd
+import data_plots as dp
 
 import data_retrieval as dr
+from log import log_for_object
+
+import logging
 
 # logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(module)s.%(funcName)s - %(message)s')
@@ -44,13 +48,13 @@ def main():
         data_frame = dr.retrieve_data(cluster_name, coord,search_radius, row_limit=ROW_LIMIT, apply_filters=False)
         data_frames.append(data_frame)
         if PLOT_SINGLE:
-            dr.plot_hr_diagram (data_frame, cluster_name, search_radius)
+            dp.plot_hr_diagram (data_frame, cluster_name, search_radius)
             # dr.plot_density_diagram (data_frame, cluster_name, search_radius)
 
         log.info(LINE_LENGTH*"=")
     if not PLOT_SINGLE:
         rows = len(data_frames) / 2
-        dr.plot_frames(data_frames, figsize=(rows, 2))
+        dp.plot_frames(data_frames, figsize=(rows, 2))
 
 
 if __name__ == "__main__":
