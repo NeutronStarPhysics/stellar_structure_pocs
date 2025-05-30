@@ -1,0 +1,6 @@
+LINE_LENGTH: 130
+RUN_ALL: False
+PLOT_SINGLE: True  # Set to True to plot a single cluster, False to plot all clusters
+INPUT_FILE: "clusters.csv"
+ROW_LIMIT: 1000
+# ROW_LIMIT: 300000

@@ -57,3 +57,30 @@ def plot_hr_diagram(gaia_df: pd.DataFrame, object_name: str, search_radius:  u.Q
     # plt.show()
     plt.savefig(f"../plots/{object_name.replace(' ', '_').lower()}_hr_diagram.png", dpi=300)
     log_for_object(object_name, f"HR diagram saved as hr_diagram_{object_name.replace(' ', '_').lower()}.png")
+
+def plot_hr_diagram_lum_temp(gaia_df: pd.DataFrame, object_name: str, search_radius:  u.Quantity):
+
+    plt.figure(figsize=(10, 8))
+
+    # Scatter plot
+    plt.scatter(
+        gaia_df['bp_rp_color'],
+        # gaia_df['abs_g_mag'],
+        gaia_df['abs_mag'],
+        s=3,          # Small marker size
+        alpha=0.5,    # Transparency for dense regions
+        color='blue'  # Or use a colormap for density
+    )
+
+    # Invert y-axis for HR Diagram convention (brighter at top)
+    plt.gca().invert_yaxis()
+
+    plt.xlabel('$G_{BP} - G_{RP}$ (mag)')
+    plt.ylabel('Absolute G Magnitude ($M_G$)')
+    plt.title(f'Gaia HR Diagram for {object_name} (Radius: {search_radius.to(u.deg):.2f} deg)')
+    plt.grid(True, linestyle=':', alpha=0.7)
+    plt.minorticks_on()
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"../plots/{object_name.replace(' ', '_').lower()}_hr_diagram.png", dpi=300)
+    log_for_object(object_name, f"HR diagram saved as hr_diagram_{object_name.replace(' ', '_').lower()}.png")

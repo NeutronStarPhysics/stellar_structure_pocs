@@ -24,7 +24,6 @@ columns = [
     'phot_rp_mean_mag',
     'ruwe', # Renormalised Unit Weight Error - crucial quality indicator
     'radial_velocity',
-    'bp_rp'
 ]
 
 
@@ -52,8 +51,7 @@ def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity
     # Filter out rows with missing values
     filtered = table[
         (~table['parallax'].mask) &
-        (~table['phot_g_mean_mag'].mask) &
-        (~table['bp_rp'].mask)
+        (~table['phot_g_mean_mag'].mask)
     ]
 
     # Convert to Pandas DataFrame for easier manipulation (Optional but Recommended) ---
