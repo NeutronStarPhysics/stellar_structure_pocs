@@ -10,6 +10,8 @@ from astroquery.gaia import Gaia
 
 from log import log_for_object
 
+from astropy.io import ascii
+from astropy.table import Table
 
 # Columns to Retrieve and Query Filters ---
 # These columns are essential for an HR Diagram and quality filtering
@@ -20,6 +22,7 @@ columns = [
     'bp_rp',
     'parallax',
     'parallax_error',
+    'parallax_over_error',
     'phot_g_mean_mag',
     'phot_bp_mean_mag',
     'phot_rp_mean_mag',
@@ -49,6 +52,7 @@ def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity
     table = job.get_results()
     log_for_object(object_name, f"Retrieved {len(table)} stars from Gaia DR3.")
 
+    ascii.write(table[:20], f"../data/{object_name.replace(' ', '_').lower()}_gaia_data.csv", format="csv", overwrite=True)
     # Filter out rows with missing values
     filtered = table[
         (~table['parallax'].mask) &
@@ -64,6 +68,7 @@ def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity
         # It's good practice to ensure all quality filters are applied explicitly.
         gaia_df.dropna(subset=['phot_g_mean_mag', 'phot_bp_mean_mag', 'phot_rp_mean_mag', 'parallax', 'parallax_error', 'ruwe'], inplace=True)
         gaia_df = gaia_df[gaia_df['parallax_error'] < 5]
+        gaia_df = gaia_df[gaia_df['parallax_over_error'] > 5]
         gaia_df = gaia_df[gaia_df['ruwe'] < 1.4]
 
     log_for_object(object_name, f"After filtering, {len(gaia_df)} stars remain for plotting (removed {initial_rows - len(gaia_df)}).")

@@ -73,8 +73,14 @@ def plot_hr_diagram_lum_temp(gaia_df: pd.DataFrame, object_name: str, search_rad
 
 
     ax = plt.gca()
-    ax.set_xlim([-1, 4.5])
+
+    # Pleiades
+    ax.set_xlim([-0.2, 4.2])
     ax.set_ylim([-2, 15])
+
+    # Omega centauri
+    #ax.set_xlim([0, 2])
+    #ax.set_ylim([-1, 8])
 
     # ax.set_xscale('log')
     # ax.set_yscale('log')
