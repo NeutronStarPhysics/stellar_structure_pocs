@@ -38,7 +38,7 @@ def plot_hr_diagram(gaia_df: pd.DataFrame, object_name: str, search_radius:  u.Q
     plt.scatter(
         # gaia_df['bp_rp_color'],
         # gaia_df['abs_g_mag'],
-        gaia_df['bp_rp'],
+        gaia_df['bp_rp_color'],
         gaia_df['abs_mag'],
         s=3,          # Small marker size
         alpha=0.5,    # Transparency for dense regions
@@ -64,16 +64,25 @@ def plot_hr_diagram_lum_temp(gaia_df: pd.DataFrame, object_name: str, search_rad
 
     # Scatter plot
     plt.scatter(
-        gaia_df['bp_rp_color'],
-        # gaia_df['abs_g_mag'],
-        gaia_df['abs_mag'],
+        x=gaia_df['bp_rp_color'],
+        y=gaia_df['abs_mag'],
         s=3,          # Small marker size
         alpha=0.5,    # Transparency for dense regions
         color='blue'  # Or use a colormap for density
     )
 
+
+    ax = plt.gca()
+    ax.set_xlim([-1, 4.5])
+    ax.set_ylim([-2, 15])
+
+    # ax.set_xscale('log')
+    # ax.set_yscale('log')
+
+    # ax.set_ylim([ymin, ymax])
+
     # Invert y-axis for HR Diagram convention (brighter at top)
-    plt.gca().invert_yaxis()
+    ax.invert_yaxis()
 
     plt.xlabel('$G_{BP} - G_{RP}$ (mag)')
     plt.ylabel('Absolute G Magnitude ($M_G$)')

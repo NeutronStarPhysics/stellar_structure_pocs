@@ -17,6 +17,7 @@ columns = [
     'source_id',
     'ra',
     'dec',
+    'bp_rp',
     'parallax',
     'parallax_error',
     'phot_g_mean_mag',
@@ -72,13 +73,7 @@ def retrieve_data(object_name: str, coords: SkyCoord, search_radius:  u.Quantity
     gaia_df['bp_rp_color'] = gaia_df['phot_bp_mean_mag'] - gaia_df['phot_rp_mean_mag']
 
     # Calculate absolute magnitude
-    parallax_arcsec = gaia_df['parallax'] / 1000  # Convert from mas to arcsec
-    distance_pc = 1 / parallax_arcsec
-    gaia_df['abs_mag'] = gaia_df['phot_g_mean_mag'] - 5 * np.log10(distance_pc) + 5
-
-    # Calculate Absolute G magnitude
-    # M_G = G_mag + 5 * log10(parallax_mas) - 10
-    gaia_df['abs_g_mag'] = gaia_df['phot_g_mean_mag'] + 5 * np.log10(gaia_df['parallax']) - 10
+    gaia_df['abs_mag'] = gaia_df['phot_g_mean_mag'] - 5 * np.log10(1000/gaia_df['parallax']) + 5
 
     log_for_object(object_name, "Sample of processed data:")
     # log_for_object(object_name, gaia_df[['phot_g_mean_mag', 'bp_rp_color', 'abs_g_mag', 'parallax', 'ruwe']].head())

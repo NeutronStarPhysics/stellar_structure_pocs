@@ -39,7 +39,7 @@ def main():
     log.info(f"Input File: {cfg['INPUT_FILE']}")
     log.info(cfg["LINE_LENGTH"]*"=")
 
-    search_radius = 45 * u.arcmin  # Search radius for Gaia query
+    search_radius = 60 * u.arcmin  # Search radius for Gaia query
 
     data_frames = []
 
@@ -55,7 +55,7 @@ def main():
 
         coord = SkyCoord(ra=cluster["Right Ascension (RA) J2000"], dec=cluster["Declination (Dec) J2000"], frame='icrs')
 
-        data_frame = dr.retrieve_data(cluster_name, coord,search_radius, row_limit=cfg["ROW_LIMIT"], apply_filters=False)
+        data_frame = dr.retrieve_data(cluster_name, coord, search_radius, row_limit=cfg["ROW_LIMIT"], apply_filters=True)
         data_frames.append(data_frame)
         if cfg["PLOT_SINGLE"]:
             # dp.plot_hr_diagram (data_frame, cluster_name, search_radius)
